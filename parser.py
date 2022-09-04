@@ -91,7 +91,7 @@ class Parser():
         self.current_face = obj.faces[-1]
     
     def parse_bone_definition(self, index, parent, tag):
-        self.bones.append(Bone(int(index), int(parent), tag))
+        self.bones.append(Bone(int(index), int(parent), tag[1:-1]))
         
     def parse_set_current_bone_index(self, index):
         self.current_object = self.bones[int(index)]
