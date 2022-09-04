@@ -114,7 +114,7 @@ class Parser():
         self.current_object.z = self.parse_vector_string(x, y, z)
     
     def parse_object(self, index, name):
-        self.objects[int(index)].name = name    
+        self.objects[int(index)].name = name[1:-1]    
     
     def parse_normal(self, x, y, z):
         if not isinstance(self.current_object, Vertex):
