@@ -83,7 +83,6 @@ class XModelImporter(Operator, ExportHelper):
                 bone.parent = None
                 if b.parent != -1:
                     parent = imp.bones[b.parent]
-                    bone.tail = imp.bones[b.parent].offset
                     bone.parent = amt.edit_bones[parent.tag]
             bpy.ops.object.mode_set(mode='OBJECT')
 
