@@ -112,7 +112,6 @@ class XModelImporter(Operator, ExportHelper):
                 
                 faces = []
                 verts = []
-                uvs = []
                 normals = []
                 
                 fv = []
@@ -121,19 +120,24 @@ class XModelImporter(Operator, ExportHelper):
                 
                 mat_index = -1
                 
+                lookup = [None] * len(imp.vertices)
+                
                 for f in o.faces:
                     mat_index = f.material_index # TODO FIXME
                     if len(f.vertex) != 3:
                         raise Exception("Only triangular faces are supported.")
                     
+                    indices = []
                     for i in range(3):
-                        verts.append(imp.vertices[f.vertex[i]].offset)
-                        uvs.append(imp.vertices[f.vertex[i]].uv)
-                        normals.append(imp.vertices[f.vertex[i]].normal)
-                        fv.append(imp.vertices[f.vertex[i]])
-                        
-                    faces.append([face_index, face_index + 1, face_index + 2])
-                    face_index += 3
+                        ind = f.vertex[i]
+                        if lookup[ind] is None:
+                            verts.append(imp.vertices[ind].offset)
+                            normals.append(imp.vertices[ind].normal)
+                            fv.append(imp.vertices[ind])
+                            lookup[ind] = face_index
+                            face_index += 1
+                        indices.append(lookup[ind])
+                    faces.append(indices)
                     
                 mesh.from_pydata(verts, [], faces)
                 obj = bpy.data.objects.new(o.name, mesh)
@@ -162,7 +166,7 @@ class XModelImporter(Operator, ExportHelper):
                 for f in bm.faces:
                     for l in f.loops:
                         v = l.vert
-                        l[layer].uv = uvs[v.index]
+                        l[layer].uv = fv[v.index].uv
                         #l[layer].uv = (v.co[0] * .001, v.co[1] * .001)
                 
                 bm.to_mesh(mesh)
