@@ -74,10 +74,16 @@ class Exporter():
             
             total = 0
             for mesh in meshes:
+                vgtable = {}
+                for gr in mesh.vertex_groups:
+                    vgtable[gr.index] = gr.name
                 for index, v in enumerate(mesh.data.vertices):
                     f.write("VERT %d\n" % (index + total))
                     f.write("OFFSET %f, %f, %f\n" % (v.co.x, v.co.y, v.co.z))
-                    f.write("BONES 0\n")
+                    f.write("BONES %d\n" % (len(v.groups)))
+                    for vg in v.groups:
+                        group_name = vgtable[vg.group]
+                        f.write("BONE %d %f\n" % (table[group_name], vg.weight))
                     f.write("\n")
                 total += len(mesh.data.vertices)
                 
