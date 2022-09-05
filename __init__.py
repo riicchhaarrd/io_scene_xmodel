@@ -1,12 +1,13 @@
 bl_info = {
-    "name": "Import XModel (.xmodel_export)",
+    "name": "XModel Importer/Exporter (.xmodel_export)",
     "author": "riicchhaarrd",
     "blender": (2, 80, 0),
     "category": "Import-Export",
-    "location": "File > Import > Import XModel",
+    "location": "File > Import-Export",
 }
 
 from . import parser
+from . import export
     
 import bpy
 import bmesh
@@ -36,6 +37,26 @@ def add_texture(texture_path, obj):
         obj.data.materials[0] = mat
     else:
         obj.data.materials.append(mat)
+        
+class XModelExporter(Operator, ExportHelper):
+    """XModelExporter""" # Use this as a tooltip for menu items and buttons.
+    bl_idname = "export_scene.xmodel_export" # Unique identifier for buttons and menu items to reference.
+    bl_label = "Export XModel" # Display name in the interface.
+    
+    filename_ext = ".xmodel_export"
+    filter_glob: StringProperty(
+        default="*.xmodel_export",
+        options={'HIDDEN'},
+        maxlen=255,
+    )
+    
+    def execute(self, context): # execute() is called when running the operator.
+        exp = export.Exporter()
+        try:
+            exp.export_file(self.filepath)
+        except Exception as e:
+            print("Error exporting file. Error: %s" % (str(e)))
+        return {'FINISHED'} # Lets Blender know the operator finished successfully.
         
 class XModelImporter(Operator, ExportHelper):
     """XModelImporter""" # Use this as a tooltip for menu items and buttons.
@@ -160,19 +181,24 @@ class XModelImporter(Operator, ExportHelper):
 
 __classes__ = (
     XModelImporter,
+    XModelExporter,
 )
 
 def menu_func_import(self, context):
     self.layout.operator(XModelImporter.bl_idname, text="Import XModel (.xmodel_export)")
+def menu_func_export(self, context):
+    self.layout.operator(XModelExporter.bl_idname, text="Export XModel (.xmodel_export)")
 
 def register():
     for c in __classes__:
         bpy.utils.register_class(c)
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
+    bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 def unregister():
     for c in reversed(__classes__):
         bpy.utils.unregister_class(c)
     bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
+    bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
 
 # This allows you to run the script directly from Blender's Text editor
