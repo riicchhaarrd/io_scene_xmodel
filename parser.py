@@ -167,7 +167,7 @@ class Parser():
                     continue
                 if l[0] == '/' and l[1] == '/':
                     continue
-                sp = l.split(" ")
+                sp = l.strip().split(" ")
                 if len(sp) == 0:
                     continue
                 
