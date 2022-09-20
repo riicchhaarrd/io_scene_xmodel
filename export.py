@@ -72,6 +72,7 @@ class Exporter():
                 numfaces += len(mesh.data.polygons)
             f.write("NUMVERTS %d\n" % (numverts))
             
+            # TODO FIXME: if the vertex group name doesn't match the bone name
             total = 0
             for mesh in meshes:
                 vgtable = {}
