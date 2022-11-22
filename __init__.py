@@ -124,11 +124,12 @@ class XModelImporter(Operator, ExportHelper):
                 
                 for f in o.faces:
                     mat_index = f.material_index # TODO FIXME
-                    if len(f.vertex) != 3:
-                        raise Exception("Only triangular faces are supported.")
+                    #if len(f.vertex) != 3:
+                    #    raise Exception("Only triangular faces are supported.")
                     
                     indices = []
-                    for i in range(3):
+                    nv = len(f.vertex)
+                    for i in range(nv):
                         ind = f.vertex[i]
                         if lookup[ind] is None:
                             verts.append(imp.vertices[ind].offset)
