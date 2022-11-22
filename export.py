@@ -35,7 +35,17 @@ class Exporter():
         amt_ob = find_armature()
 
         if amt_ob is None:
-            raise Exception("No armature found")
+            for obj in bpy.data.objects:
+                obj.select_set(False)
+            bpy.ops.object.armature_add()
+            amt_ob = bpy.context.scene.objects['Armature']
+            
+            for m in meshes:
+                m.select_set(True)
+                
+            amt_ob.select_set(True)
+            bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+            #raise Exception("No armature found")
         amt = amt_ob.data
         
         with open(path, "w", encoding="utf-8") as f:
