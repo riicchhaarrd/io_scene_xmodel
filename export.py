@@ -102,18 +102,18 @@ class Exporter():
                     f.write("VERT %d\n" % (index + total))
                     f.write("OFFSET %f, %f, %f\n" % (v.co.x, v.co.y, v.co.z))
                     
-                    vgroupnames = []
+                    vgroups = []
                     for vg in v.groups:
                         group_name = vgtable[vg.group]
                         if not group_name in table:
                             continue
-                        vgroupnames.append(group_name)
-                    if len(vgroupnames) == 0:
-                        raise Exception("Empty vgroupnames for %s" % (mesh))
+                        vgroups.append([group_name, vg.weight])
+                    if len(vgroups) == 0:
+                        raise Exception("Empty vgroups for %s" % (mesh))
                         
-                    f.write("BONES %d\n" % (len(vgroupnames)))
-                    for group_name in vgroupnames:
-                        f.write("BONE %d %f\n" % (table[group_name], vg.weight))
+                    f.write("BONES %d\n" % (len(vgroups)))
+                    for group_name, weight in vgroups:
+                        f.write("BONE %d %f\n" % (table[group_name], weight))
                     f.write("\n")
                 total += len(mesh.data.vertices)
                 
