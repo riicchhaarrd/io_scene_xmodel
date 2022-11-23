@@ -2,6 +2,7 @@ import bpy
 import bmesh
 import mathutils
 import os
+import shlex
 
 class Material():
     def __init__(self, index, name, path):
@@ -167,7 +168,8 @@ class Parser():
                     continue
                 if l[0] == '/' and l[1] == '/':
                     continue
-                sp = l.strip().split(" ")
+                #sp = l.strip().split(" ")
+                sp = shlex.split(l.strip(), posix=False)
                 if len(sp) == 0:
                     continue
                 
