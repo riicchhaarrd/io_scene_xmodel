@@ -29,6 +29,16 @@ class Exporter():
         pass
     def export_file(self, path):
         meshes = get_meshes()
+        
+        # limit all weights to max 4
+                
+        #for m in meshes:
+        #    m.select_set(True)
+        #    bpy.ops.object.mode_set(mode="WEIGHT_PAINT")
+        #    bpy.ops.object.vertex_group_limit_total(limit=4)
+        #    bpy.ops.object.mode_set(mode="OBJECT")
+        #    m.select_set(False)
+        
         amt_ob = find_armature()
 
         # deselect all
