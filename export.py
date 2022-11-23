@@ -3,23 +3,20 @@ import os
 import mathutils
 import bmesh
 
+def get_selected_objects():
+    selected_objects = [o for o in bpy.context.scene.objects if o.select_get()]
+    return selected_objects
+    
 def find_armature():
-    #selection = bpy.context.selected_objects
-    selection = bpy.context.scene.objects
-    ob = None
-
-    #print('object:', bpy.context.object)
-
-    for o in selection:
-        for m in o.modifiers:
-            if m.type == 'ARMATURE':
-                ob = m.object
-                break
-    return ob
+    sel = get_selected_objects()
+    for o in sel:
+        if o.type == "ARMATURE":
+            return o
+    return None
 
 def get_meshes():
-    #sel = bpy.context.selected_objects
-    sel = bpy.context.scene.objects
+    sel = get_selected_objects()
+    #sel = bpy.context.scene.objects
     meshes = []
     for o in sel:
         if o.type != "MESH":
@@ -34,9 +31,12 @@ class Exporter():
         meshes = get_meshes()
         amt_ob = find_armature()
 
+        # deselect all
+        for obj in bpy.data.objects:
+            obj.select_set(False)
+
+        # add armature if there's none
         if amt_ob is None:
-            for obj in bpy.data.objects:
-                obj.select_set(False)
             bpy.ops.object.armature_add()
             amt_ob = bpy.context.scene.objects['Armature']
             
